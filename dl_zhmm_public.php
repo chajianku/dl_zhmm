@@ -5,19 +5,19 @@ loadhead();
 <?php
 global $m;
 if(isset($_REQUEST['page']) && $_REQUEST['page']=='yz'){
-$mail = !empty($_POST['mail']) ? ( checkMail($_POST['mail']) ? $_POST['mail'] : ReDirect('index.php?pub_plugin=dl_zhmm&error_msg=邮箱地址不合法，请重新输入') ) : ReDirect('index.php?pub_plugin=dl_zhmm&error_msg=邮箱地址为空，请重新输入');
+$mail = !empty($_POST['mail']) ? ( checkMail($_POST['mail']) ? $_POST['mail'] : ReDirect('index.php?pub_plugin=dl_zhmm&error_msg='.urlencode('邮箱地址不合法，请重新输入') )) : ReDirect('index.php?pub_plugin=dl_zhmm&error_msg='.urlencode('邮箱地址为空，请重新输入'));
 $cx = $m->query("SELECT * FROM  `".DB_NAME."`.`".DB_PREFIX."users` WHERE email = '{$mail}' LIMIT 1");
 $p = $m->fetch_array($cx);
-if($p==""){ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&error_msg=错误：未能在本站找到持有该邮箱的用户！');die();}
+if($p==""){ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&error_msg='.urlencode('错误：未能在本站找到持有该邮箱的用户！'));die();}
 $pw=sha1(md5(EncodePwd($p['pw'] . date('Ymd') . SYSTEM_NAME . SYSTEM_VER . SYSTEM_URL)));
 $title=strip_tags(SYSTEM_NAME) . " - 找回密码";
 $text="请点击以下链接重置密码：".SYSTEM_URL."index.php?pub_plugin=dl_zhmm".'&page=yjqr'.'&email='.base64_encode($mail).'&key='.$pw;
 $x=misc::mail($mail,$title,$text);
 if($x != true){
-	ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&error_msg=错误：找回密码邮件发送失败，请检查邮件相关设置！');
+	ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&error_msg='.urlencode('错误：找回密码邮件发送失败，请检查邮件相关设置！'));
 	}
 else{
-	ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&success_msg=成功：邮件发送成功，请登录邮箱按照提示操作！');
+	ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&success_msg='.urlencode('成功：邮件发送成功，请登录邮箱按照提示操作！'));
 	}
 }
 ?>
@@ -30,14 +30,14 @@ $key=$_REQUEST['key'];
 $newpw=EncodePwd($_POST['pw']);
 $cx = $m->query("SELECT * FROM  `".DB_NAME."`.`".DB_PREFIX."users` WHERE email = '{$email}' LIMIT 1");
 $p = $m->fetch_array($cx);
-if($p==""){ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&error_msg=错误：未能在本站找到持有该邮箱的用户！');}
+if($p==""){ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&error_msg='.urlencode('错误：未能在本站找到持有该邮箱的用户！'));}
 $pw=sha1(md5(EncodePwd($p['pw'] . date('Ymd') . SYSTEM_NAME . SYSTEM_VER . SYSTEM_URL)));
 if($pw!=$key){
-	ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&error_msg=错误：该链接失效或者不归您所拥有，修改密码失败！');
+	ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&error_msg='.urlencode('错误：该链接失效或者不归您所拥有，修改密码失败！'));
 	die();
-	}else{	
+	}else{
 	$m->query("UPDATE `".DB_NAME."`.`".DB_PREFIX."users` SET `pw` = '".$newpw."' WHERE email = '{$email}'");
-	ReDirect(SYSTEM_URL.'index.php?mod=login&error_msg=由于你的密码已修改，无法再使用旧密码登录，请重新登录');
+	ReDirect(SYSTEM_URL.'index.php?mod=login&error_msg='.urlencode('由于你的密码已修改，无法再使用旧密码登录，请重新登录'));
 	}
 	}
 ?>
@@ -49,11 +49,11 @@ $email   = checkMail($emailcc) ? sqladds($emailcc) : msg('警告：非法操作'
 $key=$_REQUEST['key'];
 $cx = $m->query("SELECT * FROM  `".DB_NAME."`.`".DB_PREFIX."users` WHERE email = '{$email}' LIMIT 1");
 $p = $m->fetch_array($cx);
-if($p==""){ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&error_msg=错误：未能在本站找到持有该邮箱的用户！');}
+if($p==""){ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&error_msg='.urlencode('错误：未能在本站找到持有该邮箱的用户！'));}
 $pw=sha1(md5(EncodePwd($p['pw'] . date('Ymd') . SYSTEM_NAME . SYSTEM_VER . SYSTEM_URL)));
 if($pw!=$key){
-	ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&error_msg=错误：该链接失效或者不归您所拥有，修改密码失败！');
-	}else{	
+	ReDirect(SYSTEM_URL.'index.php?pub_plugin=dl_zhmm&error_msg='.urlencode('错误：该链接失效或者不归您所拥有，修改密码失败！'));
+	}else{
 echo '<div class="panel panel-success" style="margin:5% 15% 5% 15%;">
 	<div class="panel-heading">
           <h3 class="panel-title">设置新密码</h3>
@@ -82,24 +82,24 @@ die();
 <div class="panel panel-success" style="margin:1% 1% 1% 1%;">
 	<div class="panel-heading">
           <h3 class="panel-title">找回密码</h3>
-    </div>   
+    </div>
     <div style="margin:0% 5% 5% 5%;">
 	<div class="login-top"></div><br/>
-    <?php 
+    <?php
 	if(isset($_GET['success_msg'])){
 	  echo '';
 	  }else{
 		  echo '<b>请输入您的邮箱信息才能找回密码</b><br/><br/>';
 		  }
-	?>	
+	?>
   <?php if (isset($_GET['error_msg'])): ?><div class="alert alert-danger alert-dismissable">
   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-  <?php echo strip_tags($_GET['error_msg']); ?></div><?php endif;?>
+  <?php echo strip_tags(urldecode($_GET['error_msg'])); ?></div><?php endif;?>
   <?php if (isset($_GET['success_msg'])): ?><div class="alert alert-success alert-dismissable">
   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-  <?php echo strip_tags($_GET['success_msg']); ?></div><?php endif;?>
+  <?php echo strip_tags(urldecode($_GET['success_msg'])); ?></div><?php endif;?>
   <form name="f" method="post" action="<?php echo SYSTEM_URL ?>index.php?pub_plugin=dl_zhmm&page=yz&zhmm">
-  <?php 
+  <?php
   if(isset($_GET['success_msg'])){
 	  echo '';
 	  }
